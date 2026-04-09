@@ -1,0 +1,44 @@
+gametitle=Champions of Norrath * NTSC-U * SLUS-20565 * 84056BCA
+[INT Scaling]
+author=skeewirt
+description=Spell damage scales with Intelligence. 0.5% per INT above 20. Melee/physical unaffected.
+patch=1,EE,201D02BC,extended,08236400 // Hijack: j 0x008D9000
+patch=1,EE,201D02C0,extended,00000000 // Hijack: nop (delay slot)
+patch=1,EE,208D9000,extended,27BDFFF0 // addiu $sp,$sp,-16
+patch=1,EE,208D9004,extended,AFA80000 // sw $t0,0($sp)
+patch=1,EE,208D9008,extended,AFA90004 // sw $t1,4($sp)
+patch=1,EE,208D900C,extended,E7A00008 // swc1 $f0,8($sp)
+patch=1,EE,208D9010,extended,E7A1000C // swc1 $f1,12($sp)
+patch=1,EE,208D9014,extended,8EA803C0 // lw $t0,0x3C0($s5) playerIndex
+patch=1,EE,208D9018,extended,2D080005 // sltiu $t0,$t0,5
+patch=1,EE,208D901C,extended,11000016 // beq $t0,$zero,skip
+patch=1,EE,208D9020,extended,00000000 // nop
+patch=1,EE,208D9024,extended,33C8000D // andi $t0,$fp,0xD physical guard
+patch=1,EE,208D9028,extended,15000013 // bne $t0,$zero,skip
+patch=1,EE,208D902C,extended,00000000 // nop
+patch=1,EE,208D9030,extended,8EA803C0 // lw $t0,0x3C0($s5) playerIndex
+patch=1,EE,208D9034,extended,34095DB0 // ori $t1,$zero,0x5DB0 stride
+patch=1,EE,208D9038,extended,01090018 // mult $t0,$t1
+patch=1,EE,208D903C,extended,00004012 // mflo $t0
+patch=1,EE,208D9040,extended,3C090041 // lui $t1,0x0041
+patch=1,EE,208D9044,extended,25298600 // addiu $t1,$t1,0x8600 base=0x00418600
+patch=1,EE,208D9048,extended,01094021 // addu $t0,$t0,$t1
+patch=1,EE,208D904C,extended,8D08007C // lw $t0,0x7C($t0) INT stat
+patch=1,EE,208D9050,extended,2508FFEC // addiu $t0,$t0,-20 base INT
+patch=1,EE,208D9054,extended,44880000 // mtc1 $t0,$f0
+patch=1,EE,208D9058,extended,46800020 // cvt.s.w $f0,$f0
+patch=1,EE,208D905C,extended,3C093BA4 // lui $t1,0x3BA4 coeff=0.005
+patch=1,EE,208D9060,extended,44890800 // mtc1 $t1,$f1
+patch=1,EE,208D9064,extended,46010002 // mul.s $f0,$f0,$f1
+patch=1,EE,208D9068,extended,3C093F80 // lui $t1,0x3F80 1.0
+patch=1,EE,208D906C,extended,44890800 // mtc1 $t1,$f1
+patch=1,EE,208D9070,extended,46000800 // add.s $f0,$f1,$f0 multiplier
+patch=1,EE,208D9074,extended,4600BDC2 // mul.s $f23,$f23,$f0 apply
+patch=1,EE,208D9078,extended,8FA80000 // lw $t0,0($sp)
+patch=1,EE,208D907C,extended,8FA90004 // lw $t1,4($sp)
+patch=1,EE,208D9080,extended,C7A00008 // lwc1 $f0,8($sp)
+patch=1,EE,208D9084,extended,C7A1000C // lwc1 $f1,12($sp)
+patch=1,EE,208D9088,extended,27BD0010 // addiu $sp,$sp,16
+patch=1,EE,208D908C,extended,3C013F00 // lui $at,0x3F00 displaced
+patch=1,EE,208D9090,extended,080740B1 // j 0x001D02C4 return
+patch=1,EE,208D9094,extended,4481A000 // mtc1 $at,$f20 displaced
