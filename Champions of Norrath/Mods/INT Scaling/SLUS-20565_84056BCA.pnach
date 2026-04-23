@@ -23,7 +23,7 @@ patch=1,EE,208D903C,extended,00004012 // mflo $t0
 patch=1,EE,208D9040,extended,3C090041 // lui $t1,0x0041
 patch=1,EE,208D9044,extended,25298600 // addiu $t1,$t1,0x8600 base=0x00418600
 patch=1,EE,208D9048,extended,01094021 // addu $t0,$t0,$t1
-patch=1,EE,208D904C,extended,8D08007C // lw $t0,0x7C($t0) INT stat
+patch=1,EE,208D904C,extended,8D080094 // lw $t0,0x94($t0) INT stat
 patch=1,EE,208D9050,extended,2508FFEC // addiu $t0,$t0,-20 base INT
 patch=1,EE,208D9054,extended,44880000 // mtc1 $t0,$f0
 patch=1,EE,208D9058,extended,46800020 // cvt.s.w $f0,$f0
